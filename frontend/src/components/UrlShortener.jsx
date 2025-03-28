@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import UrlCard from './UrlCard';
@@ -9,21 +8,9 @@ function UrlShortener() {
   const [shortenedUrl, setShortenedUrl] = useState(null);
   const [error, setError] = useState('');
   
-  // const validateUrl = (url) => {
-  //   try {
-  //     new URL(url);
-  //     return true;
-  //   } catch (err) {
-  //     return false;
-  //   }
-  // };
   const validateUrl = (url) => {
-    let testUrl = url.trim(); // Remove leading/trailing whitespace
-    if (!testUrl.match(/^https?:\/\//)) {
-      testUrl = `https://${testUrl}`; // Auto-prepend https:// if no protocol
-    }
     try {
-      new URL(testUrl);
+      new URL(url);
       return true;
     } catch (err) {
       return false;
@@ -43,10 +30,6 @@ function UrlShortener() {
       return;
     }
     
-    // if (!validateUrl(url)) {
-    //   setError('Please enter a valid URL (include http:// or https://)');
-    //   return;
-    // }
     if (!validateUrl(url)) {
       console.log('Invalid URL entered:', url); // Debug log
       setError('Please enter a valid URL (e.g., https://example.com)');
@@ -54,7 +37,6 @@ function UrlShortener() {
     }
     
     setIsLoading(true);
-    console.log('VITE_PORT:', import.meta.env.VITE_PORT);
     try {
       const response = await axios.post(`http://localhost:${import.meta.env.VITE_PORT}/url`, { url });
       setShortenedUrl({

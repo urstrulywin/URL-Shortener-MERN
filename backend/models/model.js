@@ -36,6 +36,15 @@ const urlSchema = new mongoose.Schema(
     }
 );
 
-const URL = mongoose.model('url', urlSchema);
+const userSchema = new mongoose.Schema(
+    {
+      username: { type: String, required: true, unique: true },
+      password: { type: String, required: true },
+      role: { type: String, default: 'admin' },
+    }
+);
 
-export { URL, connectDB };
+const URL = mongoose.model('url', urlSchema);
+const User = mongoose.model('user', userSchema);
+
+export { URL, User, connectDB };
