@@ -2,8 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import urlRoute from './routes/route.js'; // Import the URL route
 import { URL, connectDB } from './models/model.js'; // Import the connectDB function
-
-dotenv.config();
+import cors from 'cors';
 
 if (!process.env.MONGO_URL || !process.env.PORT) {
     console.error('Missing required environment variables.');
@@ -11,7 +10,13 @@ if (!process.env.MONGO_URL || !process.env.PORT) {
 }
 
 const app = express();
+app.use(cors({
+    origin: 'http://localhost:5173', // Frontend origin
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
+  }));
 app.use(express.json());
+dotenv.config();
 
 app.use('/url', urlRoute);
 
