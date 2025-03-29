@@ -21,7 +21,7 @@ function AdminDashboard() {
     };
     
     fetchUrls();
-  }, [token]);
+  }, [token]); //urls
 
   return (
     <section className="max-w-4xl mx-auto mt-10 p-6 bg-gray-800/50 backdrop-blur-md border border-gray-700/50 rounded-lg">
