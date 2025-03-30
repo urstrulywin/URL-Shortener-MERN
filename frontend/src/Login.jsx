@@ -15,53 +15,62 @@ function Login() {
     setError('');
 
     try {
-      const response = await axios.post(`http://localhost:${import.meta.env.VITE_PORT}/auth/login`, { username, password });
+      const response = await axios.post(`http://localhost:${import.meta.env.VITE_PORT}/auth/login`, { 
+        username, 
+        password 
+      });
       login(response.data.token);
       navigate('/admin');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to log in');
+      setError(err.response?.data?.error || 'Login failed. Please try again.');
     }
   };
 
   return (
-    <section className="max-w-md mx-auto mt-10 p-6 bg-gray-800/50 backdrop-blur-md border border-gray-700/50 rounded-lg">
-      <h2 className="text-2xl font-bold mb-6">Admin Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="username" className="block mb-2">Username</label>
-          <input
-            id="username"
-            type="text"
-            className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter username"
-          />
+    <div className=" flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-gray-800 rounded-xl shadow-lg p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-cyan-400 mb-2">Admin Portal</h1>
         </div>
-        <div className="mb-4">
-          <label htmlFor="password" className="block mb-2">Password</label>
-          <input
-            id="password"
-            type="password"
-            className="w-full bg-gray-700 text-white p-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition duration-200"
-        >
-          Login
-        </button>
-      </form>
-      {error && (
-        <div className="mt-4 p-3 bg-red-500/30 border border-red-700 rounded-lg text-red-100">
-          {error}
-        </div>
-      )}
-    </section>
+
+        {error && (
+          <div className="mb-6 p-3 bg-red-900/50 text-red-100 rounded-lg text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-gray-300 mb-2">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:outline-none"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-2">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:outline-none"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-medium transition-colors"
+          >
+            Sign In
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
 

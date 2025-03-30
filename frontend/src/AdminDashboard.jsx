@@ -11,17 +11,22 @@ function AdminDashboard() {
   useEffect(() => {
     const fetchUrls = async () => {
       try {
+        console.log('Fetching URLs with token:', token); // Debug log
         const response = await axios.get(`http://localhost:${import.meta.env.VITE_PORT}/admin/urls`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log('URLs response:', response.data); // Debug log
         setUrls(response.data);
       } catch (err) {
+        console.error('Error fetching URLs:', err); // Detailed error log
         setError(err.response?.data?.error || 'Failed to fetch URLs');
       }
     };
     
-    fetchUrls();
-  }, [token]); //urls
+    if (token) {
+      fetchUrls();
+    }
+  }, [token]); //i think urls
 
   return (
     <section className="max-w-4xl mx-auto mt-10 p-6 bg-gray-800/50 backdrop-blur-md border border-gray-700/50 rounded-lg">

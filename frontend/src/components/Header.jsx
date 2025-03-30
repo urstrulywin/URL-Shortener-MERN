@@ -1,17 +1,62 @@
-
-import React from 'react';
-
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import { NavLink } from 'react-router-dom';
 function Header() {
+  const { token, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
-    <header className="py-6 px-4">
-      <div className="container mx-auto">
-        <h1 className="text-4xl font-bold text-center">
-        <span className="text-cyan-400">Short </span>
+    <header className="text-center py-6">
+      <div className="flex justify-between items-center px-4">
+        <Link to="/" className="text-4xl font-bold">
+          <span className="text-cyan-400">Short </span>
           <span className="text-white">N</span>
           <span className="text-cyan-400"> Fast</span>
-          {/* <span className="ml-2 text-xs align-top bg-cyan-500 text-white px-2 py-1 rounded-md">beta</span> */}
-        </h1>
-        <p className="text-center text-gray-400 mt-2">Shorten your URLs with lightning speed</p>
+        </Link>
+        <div className="flex items-center space-x-6">
+            <NavLink 
+                to="/" 
+                className={({ isActive }) => 
+                `hover:text-cyan-400 ${isActive ? 'text-cyan-400 font-medium border-b-2 border-cyan-400' : 'text-white'}`
+                }
+            >
+                Home
+            </NavLink>
+            
+            {token ? (
+                <>
+                <NavLink 
+                    to="/admin" 
+                    className={({ isActive }) => 
+                    `hover:text-cyan-400 ${isActive ? 'text-cyan-400 font-medium border-b-2 border-cyan-400' : 'text-white'}`
+                    }
+                >
+                    Dashboard
+                </NavLink>
+                <button 
+                    onClick={handleLogout} 
+                    className="hover:text-cyan-400 text-white"
+                >
+                    Logout
+                </button>
+                </>
+            ) : (
+                <NavLink 
+                to="/login" 
+                className={({ isActive }) => 
+                    `hover:text-cyan-400 ${isActive ? 'text-cyan-400 font-medium border-b-2 border-cyan-400' : 'text-white'}`
+                }
+                >
+                Admin Login
+                </NavLink>
+            )}
+            </div>
       </div>
     </header>
   );
