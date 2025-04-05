@@ -4,32 +4,68 @@ import { URL } from '../models/model.js';
 
 const router = express.Router();
 
-// Middleware to verify JWT
+// Authentication middleware
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
+  const token = authHeader?.split(' ')[1]; // Bearer <token>
 
-  if (!token) {
-    return res.status(401).json({ error: 'Access denied: No token provided' });
-  }
+  if (!token) return res.sendStatus(401);
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
-    req.user = decoded;
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
     next();
-  } catch (error) {
-    return res.status(403).json({ error: 'Invalid token' });
-  }
+  });
 };
 
-// Get all URLs (admin only)
+// Get all URLs (Admin only)
 router.get('/urls', authenticateToken, async (req, res) => {
   try {
-    const urls = await URL.find().select('shortURL longURL visitCount');
-    return res.status(200).json(urls);
+    const urls = await URL.find({})
+      .sort({ createdAt: -1 })
+      .select('shortURL longURL visitCount createdAt');
+    
+    res.status(200).json({
+      success: true,
+      data: urls
+    });
   } catch (error) {
-    console.error('Error fetching URLs:', error);
-    return res.status(500).json({ error: 'Failed to fetch URLs' });
+    console.error('Admin URL fetch error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve URLs'
+    });
+  }
+});
+
+// Delete specific URL (Admin only)
+router.delete('/urls/:shortUrl', authenticateToken, async (req, res) => {
+  try {
+    const deletedUrl = await URL.findOneAndDelete({ 
+      shortURL: req.params.shortUrl 
+    });
+
+    if (!deletedUrl) {
+      return res.status(404).json({
+        success: false,
+        error: 'URL not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'URL deleted successfully',
+      data: {
+        shortURL: deletedUrl.shortURL,
+        longURL: deletedUrl.longURL
+      }
+    });
+  } catch (error) {
+    console.error('URL deletion error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete URL'
+    });
   }
 });
 
