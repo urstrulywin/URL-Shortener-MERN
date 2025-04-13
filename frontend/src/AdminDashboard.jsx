@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 
 function AdminDashboard() {
@@ -8,6 +7,10 @@ function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [deleteModal, setDeleteModal] = useState({
+    show: false,
+    shortUrl: null
+  });
   const { token } = useContext(AuthContext);
 
   const fetchUrls = async () => {
@@ -29,11 +32,13 @@ function AdminDashboard() {
     if (token) fetchUrls();
   }, [token]);
 
-  const handleDelete = async (shortUrl) => {
-    if (!window.confirm('Are you sure you want to delete this URL?')) return;
+  const handleDeleteClick = (shortUrl) => {
+    setDeleteModal({ show: true, shortUrl });
+  };
 
+  const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:${import.meta.env.VITE_PORT}/admin/urls/${shortUrl}`, {
+      await axios.delete(`http://localhost:${import.meta.env.VITE_PORT}/admin/urls/${deleteModal.shortUrl}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess('URL deleted successfully');
@@ -41,6 +46,8 @@ function AdminDashboard() {
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to delete URL');
+    } finally {
+      setDeleteModal({ show: false, shortUrl: null });
     }
   };
 
@@ -50,6 +57,30 @@ function AdminDashboard() {
 
   return (
     <section className="max-w-6xl mx-auto mt-8 p-6">
+      {/* Delete Confirmation Modal */}
+      {deleteModal.show && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+          <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 max-w-md w-full">
+            <h3 className="text-lg font-bold text-white mb-3">Confirm Deletion</h3>
+            <p className="text-gray-300 mb-4">Are you sure you want to delete this URL?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setDeleteModal({ show: false, shortUrl: null })}
+                className="px-3 py-1 border border-gray-600 rounded text-white hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="backdrop-blur-lg bg-indigo-900/20 rounded-xl shadow-xl border border-indigo-400/20 p-6">
         <h2 className="text-2xl font-bold text-indigo-100 mb-6">URI Management Dashboard</h2>
         
@@ -90,8 +121,6 @@ function AdminDashboard() {
                       <td className="px-4 py-3 whitespace-nowrap">
                         <a 
                           href={`http://localhost:${import.meta.env.VITE_PORT}/${url.shortURL}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className="text-cyan-300 hover:text-cyan-200 hover:underline"
                         >
                           {url.shortURL}
@@ -108,8 +137,8 @@ function AdminDashboard() {
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <button
-                          onClick={() => handleDelete(url.shortURL)}
-                          className="px-3 py-1 bg-red-500/90 hover:bg-red-400/90 text-white rounded-md text-sm transition-all hover:shadow-[0_0_8px_-2px_rgba(244,63,94,0.5)]"
+                          onClick={() => handleDeleteClick(url.shortURL)}
+                          className="px-3 py-1 bg-red-600/90 hover:bg-red-700/90 text-white rounded-md text-sm transition-all hover:shadow-[0_0_8px_-2px_rgba(244,63,94,0.5)]"
                         >
                           Delete
                         </button>

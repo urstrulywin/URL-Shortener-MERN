@@ -33,7 +33,7 @@ const ProtectedRoute = ({ children }) => {
   
   if (!token) {
     console.log('Redirecting to login...');
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" />;
   }
   
   return children;
