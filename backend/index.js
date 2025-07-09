@@ -19,15 +19,17 @@ app.use(cors({
 
 const createAdminUser = async () => {
     try {
-        const { USERNAME: username, PASSWORD: password } = process.env;
+        const username = process.env.ADMIN_USERNAME;
+        const password = process.env.ADMIN_PASSWORD;
+
         console.log('Environment Variables:', {
-            USERNAME: process.env.USERNAME,
-            PASSWORD: process.env.PASSWORD
+            USERNAME: username,
+            PASSWORD: password
         });
 
         const hashedPassword = await bcrypt.hash(password, 10); 
         await User.create({
-            username, // ES6 shorthand for `username: username`
+            username: username,
             password: hashedPassword,
             role: 'admin',
         });

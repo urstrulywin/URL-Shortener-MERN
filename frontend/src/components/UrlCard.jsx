@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 function UrlCard({ shortURL, longURL }) {
   const [copied, setCopied] = useState(false);
-  const fullShortUrl = `http://localhost:${import.meta.env.VITE_PORT}/${shortURL}`;
+  const fullShortUrl = `${import.meta.env.VITE_BACKEND_URL}/${shortURL}`;
 
   const handleCopy = async () => {
     try {

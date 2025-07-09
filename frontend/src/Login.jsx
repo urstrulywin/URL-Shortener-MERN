@@ -15,10 +15,11 @@ function Login() {
     setError('');
 
     try {
-      const response = await axios.post(`http://localhost:${import.meta.env.VITE_PORT}/auth/login`, { 
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, { 
         username, 
         password 
       });
+
       login(response.data.token);
       navigate('/admin');
     } catch (err) {

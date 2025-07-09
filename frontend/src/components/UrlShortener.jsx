@@ -38,7 +38,7 @@ function UrlShortener() {
     
     setIsLoading(true);
     try {
-      const response = await axios.post(`http://localhost:${import.meta.env.VITE_PORT}/url`, { url });
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/url`, { url });
       setShortenedUrl({
         shortURL: response.data.shortURL,
         longURL: response.data.longURL

@@ -17,7 +17,7 @@ function AdminDashboard() {
     setIsLoading(true);
     setError('');
     try {
-      const response = await axios.get(`http://localhost:${import.meta.env.VITE_PORT}/admin/urls`, {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/urls`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUrls(response.data.data);
@@ -38,7 +38,7 @@ function AdminDashboard() {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:${import.meta.env.VITE_PORT}/admin/urls/${deleteModal.shortUrl}`, {
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/urls/${deleteModal.shortUrl}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess('URL deleted successfully');

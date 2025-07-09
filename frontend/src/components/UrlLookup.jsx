@@ -34,7 +34,7 @@ function UrlLookup() {
     
     try {
       // Redirect to the short URL
-      window.open(`http://localhost:${import.meta.env.VITE_PORT}/${code}`, '_blank');
+      window.open(`${import.meta.env.VITE_BACKEND_URL}/${code}`, '_blank');
       setShowInfo(true);
       setTimeout(() => setShowInfo(false), 5000);
     } catch (err) {
